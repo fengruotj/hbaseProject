@@ -36,7 +36,7 @@
             <pattern>
                 [ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n
             </pattern>
-            <charset>GBK</charset> <!-- 此处设置字符集 -->
+            <charset>utf-8</charset> <!-- 此处设置字符集 -->
         </encoder>
         <!-- Only log level WARN and above -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">

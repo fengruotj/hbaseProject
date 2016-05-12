@@ -24,7 +24,7 @@ import java.util.Map;
  *
  */
 @Component
-public class HBaseUtil {
+public class HBaseTempUtil {
 
     @Autowired
     protected HbaseTemplate htemplate;
