@@ -255,6 +255,7 @@ public class HBaseUtils {
         );
         filterList.addFilter(filter);
         Scan s = new Scan();
+        s.setFilter(filterList);
         ResultScanner ss = table.getScanner(s);
         for (Result r : ss){
             log.info("该表RowKey为：" + new String(r.getRow()));
