@@ -28,6 +28,6 @@ public class HbaseUtilTest {
 //        for(Cell cell:result.getColumnCells("info".getBytes(),"KTTZ".getBytes())){
 //            System.out.println(new String(CellUtil.cloneValue(cell)));
 //        }
-        HBaseUtils.getResultbyFilter("DK01_COMPEXP","info","NF", CompareFilter.CompareOp.EQUAL,"2007");
+        HBaseUtils.getResultbyFilter("DK01_COMPEXP","info","NF", CompareFilter.CompareOp.EQUAL,"2007",new String[]{"NF", "DWMC", "KTTZ"});
     }
 }

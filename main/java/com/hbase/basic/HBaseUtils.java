@@ -240,10 +240,11 @@ public class HBaseUtils {
      * @param qualifer
      * @param compareOp
      * @param value
+     * @param fiedlist fiedlist为需要过滤的字段如果为null表示显示所有列
      * @return
      * @throws IOException
      */
-    public static List<Result> getResultbyFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String value) throws IOException {
+    public static List<Result> getResultbyFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String value,String[]fiedlist) throws IOException {
         List resultList = new ArrayList();
         HTable table =(HTable) connection.getTable(TableName.valueOf(tableName));
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
@@ -255,7 +256,13 @@ public class HBaseUtils {
         );
         filterList.addFilter(filter);
         Scan s = new Scan();
+
+        if(fiedlist!=null){
+            for(String field:fiedlist)
+            s.addColumn(familyName.getBytes(),field.getBytes());
+        }
         s.setFilter(filterList);
+
         ResultScanner ss = table.getScanner(s);
         for (Result r : ss){
             log.info("该表RowKey为：" + new String(r.getRow()));
