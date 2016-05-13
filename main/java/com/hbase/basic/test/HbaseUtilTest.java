@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.io.IOException;
 
 /**
- * Created by hadoop on 5/12/16.
+ * Created by hadoop on 5/12/16.sssssssss
  */
 
 public class HbaseUtilTest {
@@ -31,6 +31,5 @@ public class HbaseUtilTest {
         for(Cell cell:result.getColumnCells("info".getBytes(),"KTTZ".getBytes())){
             System.out.println(new String(CellUtil.cloneValue(cell)));
         }
-
     }
 }
