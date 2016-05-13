@@ -5,10 +5,12 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +78,41 @@ public class HBaseUtils {
         admin.disableTable(table_name);
         admin.deleteTable(table_name);
         log.info("delete table:" + tableName + "  success");
+    }
+
+    /**
+     *  增加列族
+     * @param tableName
+     * @param FamilyName
+     * @throws IOException
+     */
+    public static void addCoulumFamily(String tableName,String FamilyName) throws IOException {
+        TableName tableName1=TableName.valueOf(tableName);
+        if(admin.tableExists(tableName1)) {
+            admin.disableTable(tableName1);
+            HTableDescriptor tableDescriptor=admin.getTableDescriptor(tableName1);
+            tableDescriptor.addFamily(new HColumnDescriptor(FamilyName));
+            admin.modifyTable(tableName1,tableDescriptor);
+            admin.enableTable(tableName1);
+        }
+    }
+
+
+    /**
+     *  删除列族
+     * @param tableName
+     * @param FamilyName
+     * @throws IOException
+     */
+    public static void deleteCoulumFamily(String tableName,String FamilyName) throws IOException {
+        TableName tableName1=TableName.valueOf(tableName);
+        if(admin.tableExists(tableName1)) {
+            admin.disableTable(tableName1);
+            HTableDescriptor tableDescriptor=admin.getTableDescriptor(tableName1);
+            tableDescriptor.removeFamily(FamilyName.getBytes());
+            admin.modifyTable(tableName1,tableDescriptor);
+            admin.enableTable(tableName1);
+        }
     }
 
     /**
@@ -171,7 +208,7 @@ public class HBaseUtils {
      * 获取某一列的所有数据
      * @param tableName
      * @param familyName
-     * @param qualifierName
+     * @param qualifierNameList
      * @return
      * @throws IOException
      */
@@ -196,4 +233,38 @@ public class HBaseUtils {
         return resultList;
     }
 
+    /**
+     *  查找结果根据过滤器
+     * @param tableName
+     * @param familyName
+     * @param qualifer
+     * @param compareOp
+     * @param value
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getResultbyFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String value) throws IOException {
+        List resultList = new ArrayList();
+        HTable table =(HTable) connection.getTable(TableName.valueOf(tableName));
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        SingleColumnValueFilter filter = new SingleColumnValueFilter(
+                familyName.getBytes(),
+                qualifer.getBytes(),
+                compareOp,
+                value.getBytes()
+        );
+        filterList.addFilter(filter);
+        Scan s = new Scan();
+        ResultScanner ss = table.getScanner(s);
+        for (Result r : ss){
+            log.info("该表RowKey为：" + new String(r.getRow()));
+            for(Cell cell : r.rawCells()){
+                log.info("列簇为：" + new String(CellUtil.cloneFamily(cell)));
+                log.info("列修饰符为：" + new String(CellUtil.cloneQualifier(cell)));
+                log.info("值为：" + new String(CellUtil.cloneValue(cell)));
+            }
+            resultList.add(r);
+        }
+        return resultList;
+    }
 }
