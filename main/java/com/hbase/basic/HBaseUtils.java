@@ -5,9 +5,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,17 +232,17 @@ public class HBaseUtils {
     }
 
     /**
-     *  查找结果根据过滤器
+     *  列值过滤器--SingleColumnValueFilter根据列值过滤器查找行元素
      * @param tableName
      * @param familyName
      * @param qualifer
      * @param compareOp
      * @param value
-     * @param fiedlist fiedlist为需要过滤的字段如果为null表示显示所有列
+     * @param fiedlist fiedlist为需要显示的字段 如果为null表示显示所有列
      * @return
      * @throws IOException
      */
-    public static List<Result> getResultbyFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String value,String[]fiedlist) throws IOException {
+    public static List<Result> getColumnResultbyFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String value,String[]fiedlist) throws IOException {
         List resultList = new ArrayList();
         HTable table =(HTable) connection.getTable(TableName.valueOf(tableName));
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
@@ -272,6 +270,132 @@ public class HBaseUtils {
                 log.info("值为：" + new String(CellUtil.cloneValue(cell)));
             }
             resultList.add(r);
+        }
+        return resultList;
+    }
+
+    /**
+     *  列值过滤器--SingleColumnValueFilter根据列值过滤器正则表达式查找行元素
+     * @param tableName
+     * @param familyName
+     * @param qualifer
+     * @param compareOp
+     * @param regx
+     * @param fiedlist  fiedlist为需要显示的字段 如果为null表示显示所有列
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getColumnResultbyRegxFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String regx,String[]fiedlist) throws IOException {
+        RegexStringComparator regexStringComparator=new RegexStringComparator(regx);
+        return getColumnResultByComparable(tableName,familyName,qualifer,compareOp,regexStringComparator,fiedlist);
+    }
+
+    /**
+     *  列值过滤器--SingleColumnValueFilter根据列值过滤器匹配完整字节数组查找行元素
+     * @param tableName
+     * @param familyName
+     * @param qualifer
+     * @param compareOp
+     * @param binary
+     * @param fiedlist
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getColumnResultbyBinaryComparatorFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String binary,String[]fiedlist) throws IOException {
+        BinaryComparator binaryComparator=new BinaryComparator(binary.getBytes());
+        return getColumnResultByComparable(tableName,familyName,qualifer,compareOp,binaryComparator,fiedlist);
+    }
+
+    /**
+     *   列值过滤器--SingleColumnValueFilter根据列值过滤器匹配匹配字节数组前缀查找行元素
+     * @param tableName
+     * @param familyName
+     * @param qualifer
+     * @param compareOp
+     * @param binaryPriex
+     * @param fiedlist
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getColumnResultbyBinaryPrefixComparatorFilter(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,String binaryPriex,String[]fiedlist) throws IOException {
+        BinaryPrefixComparator prefixComparator=new BinaryPrefixComparator(binaryPriex.getBytes());
+        return getColumnResultByComparable(tableName,familyName,qualifer,compareOp,prefixComparator,fiedlist);
+    }
+
+    /**
+     *  .PageFilter 指定页面行数，返回对应行数的结果集。
+     * @param tableName
+     * @param startRows
+     * @param pageNum   页面行数
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getPageResultByFilter(String tableName,String startRows,long pageNum) throws IOException {
+        List resultList = new ArrayList();
+        HTable table =(HTable) connection.getTable(TableName.valueOf(tableName));
+        PageFilter pageFilter=new PageFilter(pageNum);
+        Scan scan=new Scan();
+        scan.setFilter(pageFilter);
+        scan.setStartRow(startRows.getBytes());
+
+        ResultScanner ss=table.getScanner(scan);
+        for(Result result:ss){
+            log.info("该表RowKey为：" + new String(result.getRow()));
+            for(Cell cell:result.rawCells()){
+                log.info("列簇为：" + new String(CellUtil.cloneFamily(cell)));
+                log.info("列修饰符为：" + new String(CellUtil.cloneQualifier(cell)));
+                log.info("值为：" + new String(CellUtil.cloneValue(cell)));
+            }
+            resultList.add(result);
+        }
+        return resultList;
+    }
+
+    /**
+     *  列值过滤器
+     *  得到数据从比较器中得到数据Result
+     *  （2）比较器  ByteArrayComparable
+     *      通过比较器可以实现多样化目标匹配效果，比较器有以下子类可以使用：
+     *      BinaryComparator               匹配完整字节数组
+     *      BinaryPrefixComparator     匹配字节数组前缀
+     *      BitComparator
+     *      NullComparator
+     *      RegexStringComparator    正则表达式匹配
+     *      SubstringComparator        子串匹配
+     * @param tableName
+     * @param familyName
+     * @param qualifer
+     * @param compareOp
+     * @param comparable 比较器
+     * @param fiedlist
+     * @return
+     * @throws IOException
+     */
+    public static List<Result> getColumnResultByComparable(String tableName, String familyName ,String qualifer, CompareFilter.CompareOp compareOp,ByteArrayComparable comparable,String[]fiedlist) throws IOException {
+        List resultList = new ArrayList();
+        HTable table =(HTable) connection.getTable(TableName.valueOf(tableName));
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+
+        SingleColumnValueFilter singleColumnValueFilter=new SingleColumnValueFilter(familyName.getBytes(),qualifer.getBytes(),
+                compareOp,comparable
+        );
+        filterList.addFilter(singleColumnValueFilter);
+        Scan scan=new Scan();
+        if(fiedlist!=null){
+            for(String field:fiedlist)
+                scan.addColumn(familyName.getBytes(),field.getBytes());
+        }
+        scan.setFilter(filterList);
+
+        ResultScanner ss=table.getScanner(scan);
+        for(Result result:ss){
+            log.info("该表RowKey为：" + new String(result.getRow()));
+            for(Cell cell:result.rawCells()){
+                log.info("列簇为：" + new String(CellUtil.cloneFamily(cell)));
+                log.info("列修饰符为：" + new String(CellUtil.cloneQualifier(cell)));
+                log.info("值为：" + new String(CellUtil.cloneValue(cell)));
+            }
+            resultList.add(result);
         }
         return resultList;
     }
