@@ -18,6 +18,9 @@ import java.util.List;
  * Created by yangchujie on 16/3/22.
  */
 
+/**
+ *  用列值过滤数据的时候,扫描必须将要过滤的列名字加入进去,或者直接不加Column这样默认是显示所有数据
+ */
 public class HBaseUtils {
     private static final Logger log = LoggerFactory.getLogger(HBaseUtils.class);
     private static Configuration conf = null;
@@ -210,7 +213,7 @@ public class HBaseUtils {
      * @return
      * @throws IOException
      */
-    public static List<Result> getAllRecordByQualifier(String tableName, String familyName, List<String> qualifierNameList)
+    public static List<Result> getAllRecordByQualifier(String tableName, String familyName, String[] qualifierNameList)
             throws IOException {
         List resultList = new ArrayList();
         HTable table = (HTable) connection.getTable(TableName.valueOf(tableName));
@@ -250,7 +253,7 @@ public class HBaseUtils {
                 familyName.getBytes(),
                 qualifer.getBytes(),
                 compareOp,
-                value.getBytes()
+                new BinaryComparator(value.getBytes())
         );
         filterList.addFilter(filter);
         Scan s = new Scan();
@@ -399,4 +402,6 @@ public class HBaseUtils {
         }
         return resultList;
     }
+
+
 }

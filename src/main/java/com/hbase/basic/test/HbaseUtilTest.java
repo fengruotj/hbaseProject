@@ -1,7 +1,6 @@
 package com.hbase.basic.test;
 
 import com.hbase.basic.HBaseUtils;
-import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class HbaseUtilTest {
 
     public static void main(String[] args) throws IOException {
-        ApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "applicationContext.xml" });
+        ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"applicationContext.xml"});
 
         BeanFactory factory = (BeanFactory) context;
 //        HBaseTempUtil hBaseUtil = (HBaseTempUtil) factory.getBean("HBaseTempUtil");
@@ -28,6 +27,7 @@ public class HbaseUtilTest {
 //        for(Cell cell:result.getColumnCells("info".getBytes(),"KTTZ".getBytes())){
 //            System.out.println(new String(CellUtil.cloneValue(cell)));
 //        }
-        HBaseUtils.getColumnResultbyFilter("DK01_COMPEXP","info","NF", CompareFilter.CompareOp.EQUAL,"2007",new String[]{"NF", "DWMC", "KTTZ"});
+        HBaseUtils.getAllRecordByQualifier("DK01_COMPEXP","info",new String[]{"NF", "DWMC", "KTTZ"});
+        //HBaseUtils.getAllRecordByQualifier("DK01_COMPEXP","info",new String[]{"NF"});
     }
 }
