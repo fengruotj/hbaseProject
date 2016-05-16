@@ -26,6 +26,44 @@ public class HBaseUtilsTest {
 
     }
 
+    /**
+     * 添加石油公司信息
+     */
+    @Test
+    public void addA04_COMPINFO() throws IOException {
+        HBaseUtils.creatTable("A04_COMPINFO",new String[]{"info"});
+        HBaseUtils.addRecord("A04_COMPINFO","1","info","YGSMC","中国石油");
+        HBaseUtils.addRecord("A04_COMPINFO","1","info","NF","2000");
+    }
+
+    /**
+     * 添加石油分公司信息
+     */
+    @Test
+    public void addA05_SUBCOMPINFO() throws IOException {
+        HBaseUtils.creatTable("A05_SUBCOMPINFO",new String[]{"info"});
+        HBaseUtils.addRecord("A05_SUBCOMPINFO","1","info","YFGSMC","中国石油");
+        HBaseUtils.addRecord("A05_SUBCOMPINFO","1","info","NF","2000");
+        HBaseUtils.addRecord("A05_SUBCOMPINFO","1","info","YGSMC","中国石油");
+    }
+
+    /**
+     *  添加盆地信息
+     * @throws IOException
+     */
+    public void addA11_BASININFOYEAR() throws IOException {
+        HBaseUtils.creatTable("A11_BASININFOYEAR",new String[]{"info"});
+        HBaseUtils.addRecord("A11_BASININFOYEAR","1","info","PDMC","中国石油");
+        HBaseUtils.addRecord("A11_BASININFOYEAR","1","info","NF","2000");
+        HBaseUtils.addRecord("A11_BASININFOYEAR","1","info","PDLX","中国石油");
+    }
+
+    /**
+     *  添加区块信息
+     * @throws IOException
+     */
+
+
     @Test
     public void Test() throws IOException {
         List<Result> resutList=HBaseUtils.getAllRecordByQualifier("DK00_NATIONEXP","info",new String[]{"NF"});
