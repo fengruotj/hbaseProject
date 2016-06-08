@@ -1,5 +1,6 @@
 package com.hbase.basic;
 
+import com.hbase.basic.utils.HBaseUtils;
 import org.junit.Test;
 
 import java.io.IOException;

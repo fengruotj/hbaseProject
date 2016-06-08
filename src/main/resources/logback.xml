@@ -50,6 +50,7 @@
     <root level="INFO">
         <!--<appender-ref ref="FILE" />-->
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
     </root>
 
     <!-- For loggers in the these namespaces, log at all levels. -->

@@ -1,6 +1,6 @@
 package com.hbase.basic.test;
 
-import com.hbase.basic.HBaseUtils;
+import com.hbase.basic.utils.HBaseUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

@@ -1,5 +1,6 @@
 package com.hbase.basic;
 
+import com.hbase.basic.utils.HBaseUtils;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.client.Result;
@@ -51,6 +52,7 @@ public class HBaseUtilsTest {
      *  添加盆地信息
      * @throws IOException
      */
+    @Test
     public void addA11_BASININFOYEAR() throws IOException {
         HBaseUtils.creatTable("A11_BASININFOYEAR",new String[]{"info"});
         HBaseUtils.addRecord("A11_BASININFOYEAR","1","info","PDMC","中国石油");
