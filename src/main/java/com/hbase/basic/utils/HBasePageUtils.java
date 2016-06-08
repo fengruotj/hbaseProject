@@ -72,16 +72,13 @@ public class HBasePageUtils {
     /**
      * 查询数据
      * @param tableName 表的名字
-     * @param startRow 起始行
-     * @param stopRow 结束行
      * @param currentPage 当前页
      * @param pageSize  页面大小
-     * @param isfilterRowkey  是否是筛选Rowkey
+     * @param scan saomiao
      * @return
      * @throws IOException
      */
-    public static TBData getDataMap(String tableName, String startRow,
-                                    String stopRow, Integer currentPage, Integer pageSize,boolean isfilterRowkey)
+    public static TBData getDataMap(String tableName,Integer currentPage, Integer pageSize,Scan scan)
             throws IOException {
         List<Map<String, String>> mapList = null;
         mapList = new LinkedList<Map<String, String>>();
@@ -104,12 +101,7 @@ public class HBasePageUtils {
 
             // 从表池中取出HBASE表对象
             HTableInterface table = getTable(tableName);
-            Scan scan=null;
-            // 获取筛选对象
-            if(isfilterRowkey)
-                scan = getScan(startRow, stopRow);
-            else
-                scan=new Scan();
+
             // 给筛选对象放入过滤器(true标识分页,具体方法在下面)
             scan.setFilter(packageFilters(true));
             // 缓存1000条数据
@@ -223,9 +215,24 @@ public class HBasePageUtils {
         for (byte[] row : rowList) {
             Get get = new Get(row);
 
-            get.addColumn(getBytes("family1"), getBytes("column1"));
-            get.addColumn(getBytes("family1"), getBytes("column2"));
-            get.addColumn(getBytes("family2"), getBytes("column1"));
+            get.addColumn(getBytes("info"), getBytes("YQTMC"));
+            get.addColumn(getBytes("info"), getBytes("YQTBM"));
+            get.addColumn(getBytes("info"), getBytes("PDMC"));
+            get.addColumn(getBytes("info"), getBytes("SSPDBM"));
+            get.addColumn(getBytes("info"), getBytes("YQCLX"));
+            get.addColumn(getBytes("info"), getBytes("NF"));
+            get.addColumn(getBytes("info"), getBytes("SQMC"));
+            get.addColumn(getBytes("info"), getBytes("CJYHD"));
+            get.addColumn(getBytes("info"), getBytes("TMCD"));
+            get.addColumn(getBytes("info"), getBytes("MJ"));
+            get.addColumn(getBytes("info"), getBytes("ZHHSL"));
+            get.addColumn(getBytes("info"), getBytes("CCCD"));
+            get.addColumn(getBytes("info"), getBytes("CCB"));
+            get.addColumn(getBytes("info"), getBytes("LJTMDZCLZL"));
+            get.addColumn(getBytes("info"), getBytes("LJTMDZCLTJ"));
+            get.addColumn(getBytes("info"), getBytes("HYQCX"));
+            get.addColumn(getBytes("info"), getBytes("YX"));
+
             list.add(get);
         }
         return list;
@@ -254,7 +261,7 @@ public class HBasePageUtils {
         int currentPage = 1;
         int pageSize = 20;
         // 执行hbase查询
-        getDataMap("table", startRow, stopRow, currentPage, pageSize,true);
+      //  getDataMap("table", startRow, stopRow, currentPage, pageSize,true);
 
     }
 }

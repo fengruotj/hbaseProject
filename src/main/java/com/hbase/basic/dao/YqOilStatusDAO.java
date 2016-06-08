@@ -38,4 +38,10 @@ public class YqOilStatusDAO extends BaseHibernateDAOImpl<YqOilStatus>  {
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
+	public long getOilStatusCount(String name){
+		Query query=getSession().createQuery("select count(s) from YqOilStatus s where s.yqOilField.name LIKE :name")
+                .setString("name","%"+name+"%");
+        return (long) query.uniqueResult();
+	}
+
 }

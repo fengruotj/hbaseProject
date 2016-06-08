@@ -48,4 +48,10 @@ public class YqOilFieldDAO extends BaseHibernateDAOImpl<YqOilField>  {
 		return query.list();
 	}
 
+	public long getOilFieldCount(String name){
+		Query query=getSession().createQuery("select count(s) from YqOilField s where s.name LIKE :name")
+				.setString("name","%"+name+"%");
+		return (long) query.uniqueResult();
+	}
+
 }

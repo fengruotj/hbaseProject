@@ -49,7 +49,11 @@ public class YqOilFieldController extends BaseController {
             map.put("status",temp.getStatus());
             list.add(map);
         }
-        return gsonUtil.GsonString(list);
+
+        Map root=new HashMap();
+        root.put("total",oilFieldDAO.getOilFieldCount(oilField.getName()));
+        root.put("rows",list);
+        return gsonUtil.GsonString(root);
     }
 
     /**
@@ -86,6 +90,10 @@ public class YqOilFieldController extends BaseController {
             map.put("status",temp.getStatus());
             list.add(map);
         }
-        return gsonUtil.GsonString(list);
+
+        Map root=new HashMap();
+        root.put("total",oilStatusDAO.getOilStatusCount(name));
+        root.put("rows",list);
+        return gsonUtil.GsonString(root);
     }
 }

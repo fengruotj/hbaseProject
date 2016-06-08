@@ -5,6 +5,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
@@ -403,5 +405,53 @@ public class HBaseUtils {
         return resultList;
     }
 
+
+    /*****************************************下面是为了统计一个Hbase表的个数的API*****************************/
+
+    /**
+     *  为一个Hbae表注册个Table注册该Coprocessor，用来统计Hbase中记录的个数
+     * @param name
+     * @throws IOException
+     */
+    public static void addCoprocessorToTable(String name) throws IOException {
+        String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
+        TableName tableName=TableName.valueOf(name);
+        admin.disableTable(tableName);
+
+        HTableDescriptor htd = admin.getTableDescriptor(tableName);
+
+        htd.addCoprocessor(coprocessClassName);
+
+        admin.modifyTable(tableName, htd);
+
+        admin.enableTable(tableName);
+        log.info("=======================addCoprocessorToTable success!!========================== ");
+    }
+
+    /**
+     *  得到Table的记录的个数
+     * @param tableName
+     * @return
+     */
+    public static long getTableCount(String tableName,Scan scan){
+        //s.addColumn(Bytes.toBytes("info"), Bytes.toBytes("c1"));
+
+        AggregationClient ac = new AggregationClient(conf);
+
+        try {
+            long total=0;
+            total=ac.rowCount(TableName.valueOf(tableName), new LongColumnInterpreter(), scan);
+            log.info("=====================tableName:个数 "+total);
+            return total;
+
+        } catch (Throwable e) {
+
+            // TODO Auto-generated catch block
+
+            e.printStackTrace();
+
+        }
+        return 0;
+    }
 
 }

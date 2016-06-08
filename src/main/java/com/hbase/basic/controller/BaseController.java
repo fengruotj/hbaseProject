@@ -3,6 +3,7 @@ package com.hbase.basic.controller;
 import com.hbase.basic.dao.YqOilFieldDAO;
 import com.hbase.basic.dao.YqOilStatusDAO;
 import com.hbase.basic.utils.GsonUtil;
+import com.hbase.basic.utils.HBaseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -20,4 +21,5 @@ public class BaseController {
 
     @Autowired
     protected YqOilStatusDAO oilStatusDAO;
+
 }
