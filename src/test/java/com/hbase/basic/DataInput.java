@@ -94,8 +94,6 @@ public class DataInput {
         HBaseUtils.addRecord("OILCOMPINFO","A1","info","YGSMC","公司1");       //油公司名称
         HBaseUtils.addRecord("OILCOMPINFO","A1","info","DATA_STATUS","1");     //数据状态
         HBaseUtils.addRecord("OILCOMPINFO","A1","info","YFGSBM","yfgs123");       //油分公司编码
-
-
     }
 
 
