@@ -51,6 +51,91 @@ public class DataInput {
             }
     }
 
+    /**
+     * 添加DK03_WELLINFO 钻井基本信息
+     * @throws Exception
+     */
+    @Test
+    public void addDK03_WELLINFO() throws Exception {
+        Random random=new Random();
+        HBaseUtils.creatTable("OILWELLINFO",new String[]{"info"});
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JH","A1");
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JHDM","db6546");
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","ZJBH","BC56");
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JKZBX","233.5");       //井口坐标X
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JKZBY","96.8");         //井口坐标Y
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JDZBX","233.6");         //井底坐标X
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","JDZBY","233.7");         //井底坐标Y
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","YFGSBSM","yfgs123");     //油分公司标识码
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","YGSBSM","bm212");         //油公司标识码
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","SQBSM","BC56");         //省区标识码
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","KZRQ","1995-12-06");    //开钻日期
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","WZRQ","2012-10-07");    //完钻日期
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","BFRQ","2013-12-06");    //报废日期
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","WZRQ","2013-6-10");     //完钻日期
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","PDBSM","pdbsm123");     //盆地标识码
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","NF","2013");         //年份
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","BXHB","56");         //补心海拔
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","SJJS","78");         //设计井深
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","WZJS","23");         //完钻井深
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","SPDCD","22");         //水平段长度
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","WJFS","完井方式1");         //完井方式
+        HBaseUtils.addRecord("OILFIELDINFO","A1","info","QKMC","区块名称1");         //区块名称1
+    }
+
+    /**
+     *  添加油气公司信息表
+     * @throws Exception
+     */
+    @Test
+    public void addJ01_COMPINFO() throws Exception {
+        HBaseUtils.creatTable("OILCOMPINFO",new String[]{"info"});
+    }
+
+
+    /**
+     *  添加油气分公司信息表
+     * @throws Exception
+     */
+    @Test
+    public void addJ02_SUBCOMPINFO() throws Exception {
+        HBaseUtils.creatTable("OILSUBCOMPINFO",new String[]{"info"});
+    }
+
+    /**
+     *  添加省份信息表
+     * @throws Exception
+     */
+    @Test
+    public void addA03_PROVINFO() throws Exception {
+        HBaseUtils.creatTable("OILPROVINFO",new String[]{"info"});
+    }
+
+    /**
+     * 添加油气开采年检信息
+     * @throws Exception
+     */
+    @Test
+    public void addEN07_MININGAS() throws Exception {
+        HBaseUtils.creatTable("OILMININGAS",new String[]{"info"});
+    }
+
+    /**
+     * 添加油气勘探登记信息
+     * @throws Exception
+     */
+    @Test
+    public void addEK06_EXPLORATREGIST() throws Exception {
+        HBaseUtils.creatTable("OILEXPLORATREGIST",new String[]{"info"});
+    }
+
+    /**
+     * 添加油气大区信息表
+     */
+    public void addA08_REGIONINFO() throws Exception {
+        HBaseUtils.creatTable("OILEXPLORATREGIST",new String[]{"info"});
+    }
+
     @Test
     public void deleteOILFIELDINFO() throws IOException {
         HBaseUtils.deleteTable("OILFIELDINFO");

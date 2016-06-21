@@ -67,11 +67,11 @@ public class HBaseUtils {
                 hTableDescriptor.addFamily(new HColumnDescriptor(family));
             }
             admin.createTable(hTableDescriptor);
-            log.info("create table:" + tableName + "  success");
-        }
-    }
+     log.info("create table:" + tableName + "  success");
+     }
+     }
 
-    /**
+     /**
      * 删除 Hbase 表
      * @param tableName
      * @throws IOException
